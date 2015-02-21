@@ -1,0 +1,40 @@
+#!/usr/bin/python2
+
+import argparse
+import getpass
+from valve.source.rcon import RCON
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-a', '--addr', action="store", dest="addr", help="Sets the address to connect to. This option is mandatory and must be set.")
+parser.add_argument('-p', '--port', action="store", dest="port", type=int, default="27015", help="Sets the port to connect if a port other than 27015 is used. The default setting is 27015.")
+parser.add_argument('-e', '--exec', dest="cfg", help="Execs a config file on the server.")
+parser.add_argument('-l', '--level', dest="level", help="Changes the level on the server. Full map name required.")
+parser.add_argument('-s', '--status', dest="status", action="store_true", default="false", help="Prints the output of the status command. This will happen with no other server arguments.")
+
+#print (parser.parse_args())
+args = parser.parse_args()
+#print("The Address you're connecting to is {addr} and the port is {port}".format(addr=args.addr, port=args.port))
+
+SERVER_ADDRESS = (args.addr, args.port)
+
+if args.addr is None:
+    print("The \'-a\' option is mandatory and must be set.")
+    parser.print_help()
+    exit(-1)
+elif args.cfg:
+    RCON_PASS = getpass.getpass("[RCON]: ")
+    with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
+        print(rcon("exec {cfg}".format(cfg=args.cfg)))
+elif args.level:
+    RCON_PASS = getpass.getpass("[RCON]: ")
+    with RCON(SERVER_ADDRESS, RCON_PASS, 50) as rcon:
+        rcon("changelevel {level}".format(level=args.level))
+elif args.status == True:
+    RCON_PASS = getpass.getpass("[RCON]: ")
+    with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
+        print(rcon("status"))
+else:
+    RCON_PASS = getpass.getpass("[RCON]: ")
+    with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
+        print(rcon("status"))
