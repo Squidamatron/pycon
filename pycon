@@ -10,8 +10,10 @@ parser.add_argument('-a', '--addr', action="store", required=True, dest="addr", 
 parser.add_argument('-p', '--port', action="store", dest="port", type=int, default="27015", help="Sets the port to connect if a port other than 27015 is used. The default setting is 27015.")
 parser.add_argument('-e', '--exec', dest="cfg", help="Execs a config file on the server.")
 parser.add_argument('-l', '--level', dest="level", help="Changes the level on the server. Full map name required.")
+parser.add_argument('-m', '--maplist', dest="list", help="Lists available maps on the server.")
 parser.add_argument('-k', '--kick', dest="id", help="Kick a user off the server using their from Status (-s)")
 parser.add_argument('-s', '--status', dest="status", action="store_true", default="false", help="Prints the output of the status command. This will happen with no other server arguments.")
+parser.add_argument('--restart', dest="restart", action="store_true", default="false", help="Restarts the server.")
 
 #print (parser.parse_args())
 args = parser.parse_args()
@@ -30,9 +32,13 @@ else:
             print(rcon("exec {cfg}".format(cfg=args.cfg)))
         elif args.level:
             rcon("changelevel {level}".format(level=args.level))
+        elif args.list:
+            print(rcon("maps {list}".format(list=args.list)))
         elif args.id:
             rcon("kickid {id}".format(id=args.id))
         elif args.status == True:
             print(rcon("status"))
+        elif args.restart == True:
+            print(rcon("_restart"))
         else:
             print(rcon("status"))
