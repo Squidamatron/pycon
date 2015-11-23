@@ -23,23 +23,16 @@ if args.addr is None:
     print("The \'-a\' option is mandatory and must be set.")
     parser.print_help()
     exit(-1)
-elif args.cfg:
-    RCON_PASS = getpass.getpass("[RCON]: ")
-    with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
-        print(rcon("exec {cfg}".format(cfg=args.cfg)))
-elif args.level:
-    RCON_PASS = getpass.getpass("[RCON]: ")
-    with RCON(SERVER_ADDRESS, RCON_PASS, 50) as rcon:
-        rcon("changelevel {level}".format(level=args.level))
-elif args.id:
-    RCON_PASS = getpass.getpass("[RCON]: ")
-    with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
-        rcon("kickid {id}".format(id=args.id))
-elif args.status == True:
-    RCON_PASS = getpass.getpass("[RCON]: ")
-    with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
-        print(rcon("status"))
 else:
     RCON_PASS = getpass.getpass("[RCON]: ")
     with RCON(SERVER_ADDRESS, RCON_PASS) as rcon:
-        print(rcon("status"))
+        if args.cfg:
+            print(rcon("exec {cfg}".format(cfg=args.cfg)))
+        elif args.level:
+            rcon("changelevel {level}".format(level=args.level))
+        elif args.id:
+            rcon("kickid {id}".format(id=args.id))
+        elif args.status == True:
+            print(rcon("status"))
+        else:
+            print(rcon("status"))
